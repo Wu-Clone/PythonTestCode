@@ -5,14 +5,17 @@ from bs4 import BeautifulSoup
 import os
 import time
 
+from get_title import get_title
+
 # 起始URL
-start_url = "https://e-hentai.org/s/354cdd5756/2022259-72"
-dir = "[NCP] Mechakucha Eroi Karada no Sewazuki Osananajimi to, Cool-kei Kyonyuu Bijin Douryou to Oren-chi de 3P Harem! [Chinese]"
+start_url = "https://e-hentai.org/s/eba4eb83b2/3097424-1"
+
 # 设置请求头，包括User-Agent（模拟浏览器访问）
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/85.0.4183.121 Safari/537.36"
 }
-
+dir = get_title(url=start_url)
 
 # 创建一个存储图片的文件夹
 os.makedirs(dir, exist_ok=True)
