@@ -28,3 +28,7 @@ build/
 # 操作系统生成的文件
 .DS_Store
 Thumbs.db
+
+# 我定义的
+my_constant.py
+test/

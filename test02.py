@@ -8,7 +8,7 @@ import time
 from get_title import get_title
 
 # 起始URL
-start_url = "https://e-hentai.org/s/eba4eb83b2/3097424-1"
+start_url = "https://e-hentai.org/s/d8a8fe1a85/3097333-1"
 
 # 设置请求头，包括User-Agent（模拟浏览器访问）
 headers = {
@@ -49,7 +49,7 @@ def download_images(url):
                 print(f"图片下载失败，状态码：{img_response.status_code}")
         # 延时请求，延时2秒
         # time.sleep(2)
-        time.sleep(random() * 3)
+        time.sleep(random())
         # time.sleep(random() * 30)
         # 查找下一页的链接<a id="next" ...>
         next_link = soup.find('a', id='next')
