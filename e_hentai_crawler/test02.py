@@ -1,4 +1,5 @@
 from random import random
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
@@ -11,6 +12,10 @@ from get_title import get_title
 # 起始URL
 start_urls = []
 
+proxies = {
+    'http': 'http://127.0.0.1:7897',  # 根据 Clash 的配置调整端口
+    'https': 'http://127.0.0.1:7897'
+}
 
 def create_dir(start_url):
     # 设置请求头，包括User-Agent（模拟浏览器访问）
@@ -30,7 +35,7 @@ def download_images(url, dir_name):
                       "Chrome/85.0.4183.121 Safari/537.36"
     }
     # 发送请求并获取网页内容
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
     print(f"正在访问：{url}，状态码：{response.status_code}")
 
     # 如果状态码为200，继续解析内容
@@ -82,3 +87,5 @@ if __name__ == '__main__':
     for url in unique_urls:
         dir_name = create_dir(url)
         download_images(url, dir_name)
+        print("休息一下")
+        sleep(10)
