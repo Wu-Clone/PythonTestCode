@@ -5,23 +5,30 @@ from bs4 import BeautifulSoup
 import os
 import time
 
+from e_hentai_crawler.get_list import get_list
 from get_title import get_title
 
 # 起始URL
-start_url = "https://e-hentai.org/s/d8a8fe1a85/3097333-1"
+start_urls = []
 
-# 设置请求头，包括User-Agent（模拟浏览器访问）
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/85.0.4183.121 Safari/537.36"
-}
-dir = get_title(url=start_url)
 
-# 创建一个存储图片的文件夹
-os.makedirs(dir, exist_ok=True)
+def create_dir(start_url):
+    # 设置请求头，包括User-Agent（模拟浏览器访问）
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/85.0.4183.121 Safari/537.36"
+    }
+    dir_name = get_title(url=start_url)
+    # 创建一个存储图片的文件夹
+    os.makedirs(dir_name, exist_ok=True)
+    return dir_name
 
 # 递归下载图片并访问下一页的函数
-def download_images(url):
+def download_images(url, dir_name):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/85.0.4183.121 Safari/537.36"
+    }
     # 发送请求并获取网页内容
     response = requests.get(url, headers=headers)
     print(f"正在访问：{url}，状态码：{response.status_code}")
@@ -42,7 +49,7 @@ def download_images(url):
             # 下载图片并保存到指定文件夹
             img_response = requests.get(img_url, headers=headers)
             if img_response.status_code == 200:
-                with open(dir + '//' + img_name, 'wb') as f:
+                with open(dir_name + '//' + img_name, 'wb') as f:
                     f.write(img_response.content)
                     print(f"{img_name} 下载完成")
             else:
@@ -55,14 +62,14 @@ def download_images(url):
         next_link = soup.find('a', id='next')
         if next_link and 'href' in next_link.attrs:
             temp_url = next_link['href']
-            if (url == temp_url):
+            if url == temp_url:
                 print("到最后一页了")
                 return
             next_url = temp_url
             print(f"进入下一页：{next_url}")
 
             # 递归调用函数，继续处理下一页
-            download_images(next_url)
+            download_images(next_url, dir_name)
         else:
             print("没有找到下一页链接，下载结束。")
     else:
@@ -70,4 +77,8 @@ def download_images(url):
 
 
 # 开始从起始URL下载
-download_images(start_url)
+if __name__ == '__main__':
+    unique_urls = get_list(r"D:\code\python\pythonProgramForFun\local\url_list.txt")
+    for url in unique_urls:
+        dir_name = create_dir(url)
+        download_images(url, dir_name)
