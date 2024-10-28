@@ -6,8 +6,17 @@ from bs4 import BeautifulSoup
 import os
 import time
 
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
 from e_hentai_crawler.get_list import get_list
+from e_hentai_crawler.utility import fetch_response, is_filename_exists, name_a_name
 from get_title import get_title
+
+# session = requests.Session()
+# retries = Retry(total=5, backoff_factor=1)
+# session.mount('http://', HTTPAdapter(max_retries=retries))
+# session.mount('https://', HTTPAdapter(max_retries=retries))
 
 # 起始URL
 start_urls = []
@@ -35,7 +44,13 @@ def download_images(url, dir_name):
                       "Chrome/85.0.4183.121 Safari/537.36"
     }
     # 发送请求并获取网页内容
-    response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
+    # try:
+    #     response = requests.get(url, headers=headers, proxies=proxies, timeout=10, verify=False)
+    # except requests.exceptions.SSLError as e:
+    #     print(f"SSL error: {e}")
+    #     return
+    # response = requests.get(url, headers=headers, timeout=10)
+    response = fetch_response(url, headers=headers)
     print(f"正在访问：{url}，状态码：{response.status_code}")
 
     # 如果状态码为200，继续解析内容
@@ -52,17 +67,22 @@ def download_images(url, dir_name):
             img_name = img_url.split('/')[-1]
 
             # 下载图片并保存到指定文件夹
-            img_response = requests.get(img_url, headers=headers)
+            # img_response = requests.get(img_url, headers=headers)
+            img_response = fetch_response(img_url, headers=headers)
+
             if img_response.status_code == 200:
-                with open(dir_name + '//' + img_name, 'wb') as f:
+                name_method = 0
+                # check name
+                if is_filename_exists(dir_name, img_name):
+                    name_method = 1
+
+                # with open(dir_name + '//' + img_name, 'wb') as f:
+                with open(name_a_name(dir_name, img_name,name_method), 'wb') as f:
                     f.write(img_response.content)
                     print(f"{img_name} 下载完成")
             else:
                 print(f"图片下载失败，状态码：{img_response.status_code}")
-        # 延时请求，延时2秒
-        # time.sleep(2)
-        time.sleep(random())
-        # time.sleep(random() * 30)
+
         # 查找下一页的链接<a id="next" ...>
         next_link = soup.find('a', id='next')
         if next_link and 'href' in next_link.attrs:
@@ -72,6 +92,10 @@ def download_images(url, dir_name):
                 return
             next_url = temp_url
             print(f"进入下一页：{next_url}")
+            # 延时请求，延时2秒
+            # time.sleep(2)
+            time.sleep(random())
+            # time.sleep(random() * 30)
 
             # 递归调用函数，继续处理下一页
             download_images(next_url, dir_name)
@@ -88,4 +112,3 @@ if __name__ == '__main__':
         dir_name = create_dir(url)
         download_images(url, dir_name)
         print("休息一下")
-        sleep(10)
