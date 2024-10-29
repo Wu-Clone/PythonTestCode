@@ -15,7 +15,7 @@ def get_title(url):
     else:
         print("无法获取，状态码：", response.status_code)
 
-    clean_title = re.sub(r'[\/:*?"<>|]', ' ', title)
+    clean_title = re.sub(r'[\/:*?"<>|]', ' ', title).strip()
     # if len(clean_title) > 50:
     #     print(len(clean_title))
     #     clean_title = clean_title[:50]

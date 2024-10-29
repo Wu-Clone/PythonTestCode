@@ -26,6 +26,7 @@ proxies = {
     'https': 'http://127.0.0.1:7897'
 }
 
+
 def create_dir(start_url):
     # 设置请求头，包括User-Agent（模拟浏览器访问）
     headers = {
@@ -36,6 +37,7 @@ def create_dir(start_url):
     # 创建一个存储图片的文件夹
     os.makedirs(dir_name, exist_ok=True)
     return dir_name
+
 
 # 递归下载图片并访问下一页的函数
 def download_images(url, dir_name):
@@ -77,7 +79,8 @@ def download_images(url, dir_name):
                     name_method = 1
 
                 # with open(dir_name + '//' + img_name, 'wb') as f:
-                with open(name_a_name(dir_name, img_name,name_method), 'wb') as f:
+                str_show = name_a_name(dir_name, img_name, name_method)
+                with open(str_show, 'wb') as f:
                     f.write(img_response.content)
                     print(f"{img_name} 下载完成")
             else:
@@ -94,7 +97,7 @@ def download_images(url, dir_name):
             print(f"进入下一页：{next_url}")
             # 延时请求，延时2秒
             # time.sleep(2)
-            time.sleep(random())
+            # time.sleep(random())
             # time.sleep(random() * 30)
 
             # 递归调用函数，继续处理下一页
