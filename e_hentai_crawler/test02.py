@@ -29,10 +29,6 @@ proxies = {
 
 def create_dir(start_url):
     # 设置请求头，包括User-Agent（模拟浏览器访问）
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/85.0.4183.121 Safari/537.36"
-    }
     dir_name = get_title(url=start_url)
     # 创建一个存储图片的文件夹
     os.makedirs(dir_name, exist_ok=True)
@@ -45,13 +41,6 @@ def download_images(url, dir_name):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/85.0.4183.121 Safari/537.36"
     }
-    # 发送请求并获取网页内容
-    # try:
-    #     response = requests.get(url, headers=headers, proxies=proxies, timeout=10, verify=False)
-    # except requests.exceptions.SSLError as e:
-    #     print(f"SSL error: {e}")
-    #     return
-    # response = requests.get(url, headers=headers, timeout=10)
     response = fetch_response(url, headers=headers)
     print(f"正在访问：{url}，状态码：{response.status_code}")
 
