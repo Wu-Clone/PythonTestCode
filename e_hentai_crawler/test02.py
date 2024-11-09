@@ -1,3 +1,4 @@
+import sys
 from random import random
 from time import sleep
 
@@ -32,7 +33,7 @@ def create_dir(start_url):
     dir_name = get_title(url=start_url)
     # 创建一个存储图片的文件夹
     os.makedirs(dir_name, exist_ok=True)
-    return dir_name
+    return dir_name.strip(".")
 
 
 # 递归下载图片并访问下一页的函数
@@ -99,7 +100,10 @@ def download_images(url, dir_name):
 
 # 开始从起始URL下载
 if __name__ == '__main__':
+    # 提到递归深度
+    sys.setrecursionlimit(2100)
     unique_urls = get_list(r"D:\code\python\pythonProgramForFun\local\url_list.txt")
+    print(len(unique_urls))
     for url in unique_urls:
         dir_name = create_dir(url)
         download_images(url, dir_name)
